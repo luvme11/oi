@@ -1660,8 +1660,12 @@
   ]
 };
   const ticker = "仙台駅へようこそ。ごゆっくりお過ごしください。";
-  const masterVol = 5;
+  // 車内放送 음량 (0~100) · 전체 음량. 곡마다 따로 줄이고 싶으면 캔의 vol(0~100)을 쓰세요 (駅員室에서 조절)
+  const masterVol = 100;
   /*DATA:END*/
+  // 이 브라우저에서 슬라이더로 바꾼 음량은 새로고침해도 유지돼요 (GitHub 값이 바뀌면 자동으로 무시)
+  let volLive = masterVol;
+  try { const o = JSON.parse(localStorage.getItem('sendai-vol')); if (o && o.base === masterVol && o.v >= 0 && o.v <= 100) volLive = o.v; } catch (e) {}
 
   // 승차권 · 전광판에 내용 반영 (駅員室에서 저장하면 이 값이 바뀌어요)
   (() => {
@@ -1917,7 +1921,8 @@
       if (e.data === S.ENDED && !isList) yt.playVideo();      // 영상 1개면 반복
       mark(); if (!busy) led.textContent = idleTxt();
     };
-    const applyVol = () => { if (!yt || !ready) return; try { const v = Math.max(0, Math.min(100, Math.round(masterVol * (cur && cur.vol != null ? cur.vol : 100) / 100))); yt.setVolume(v); } catch (e) {} };
+    const applyVol = () => { if (!yt || !ready) return; try { const v = Math.max(0, Math.min(100, Math.round(volLive * (cur && cur.vol != null ? cur.vol : 100) / 100))); yt.setVolume(v); } catch (e) {} };
+    window.__applyVol = () => applyVol();
     const start = () => {
       const q = parseYT(cur.url); isList = !!q.list; applyVol();
       if (q.list) { yt.loadPlaylist({ list: q.list, listType: 'playlist', index: 0 }); try { yt.setLoop(true); } catch (e) {} }
@@ -2480,6 +2485,7 @@
   const clone = o => JSON.parse(JSON.stringify(o));
   const KEYS = ['records', 'notes', 'cans', 'losts', 'profile', 'ticker', 'masterVol'];
   const D = clone({ records, notes, cans, losts, profile, ticker, masterVol });
+  D.masterVol = volLive;
   let cfg = { owner: '', repo: '', branch: 'main', path: 'index.html', token: '', remember: true };
   try { Object.assign(cfg, JSON.parse(localStorage.getItem(LS)) || {}); } catch (e) {}
   if (!cfg.owner && /\.github\.io$/.test(location.hostname)) {
@@ -2628,7 +2634,7 @@
     if (el.dataset.g) { cfg[el.dataset.g] = el.type === 'checkbox' ? el.checked : el.value.trim(); persist(); return; }
     const k = el.dataset.k; if (!k) return;
     if (el.type === 'range' && el.nextElementSibling) el.nextElementSibling.textContent = el.value;
-    if (k === 'masterVol') D.masterVol = +el.value || 0;
+    if (k === 'masterVol') { D.masterVol = +el.value || 0; volLive = D.masterVol; try { localStorage.setItem('sendai-vol', JSON.stringify({ v: volLive, base: masterVol })); } catch (er) {} if (window.__applyVol) window.__applyVol(); }
     else if (k === 'ticker') D.ticker = el.value;
     else if (k === 'profile') D.profile[el.dataset.f] = parse(el.dataset.t, el.value);
     else {
