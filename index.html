@@ -947,6 +947,9 @@
   .adm-chk{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;color:var(--ink-soft);letter-spacing:.04em}
   .adm-note{margin-top:14px;padding:10px 12px;border-left:3px solid var(--band);background:#f4f7f8;font-size:12px;line-height:1.8;color:var(--ink-soft);border-radius:0 5px 5px 0}
   .adm-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .adm-rg{display:flex;align-items:center;gap:10px}
+  .adm-rg b{flex:none;width:34px;text-align:right;font-family:"Barlow Condensed",sans-serif;font-size:16px;font-weight:500;letter-spacing:.05em}
+  .adm .adm-rg input[type=range]:not([type=checkbox]):not([type=color]){flex:1;padding:0;border:0;background:none;box-shadow:none;height:28px;accent-color:#3f5f94}
   .adm-nt{display:grid;gap:10px}
   .adm-ntc{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:6px;background:#fff;padding:10px;box-shadow:0 1px 3px rgba(80,100,120,.08)}
   .adm-ntc .pv{flex:none;width:66px;aspect-ratio:46/62;background:#cfd9e0;border-radius:2px;overflow:hidden}
@@ -1466,197 +1469,50 @@
   // =====================================================
   /*DATA:START*/
   const records = [
-  {
-    "type": "普通",
-    "y": 2026,
-    "d": "10.25",
-    "time": "21:40",
-    "title": "及川 徹",
-    "body": "토오루는 왜 이렇게 우유빵을 좋아할까?",
-    "tags": [
-      "오이카와"
-    ]
-  }
-];
-  const notes = [
-  {
-    "id": 1792906226973,
-    "src": "notes/1792906226973.jpg",
-    "o": "p",
-    "cap": "体育館の床に座っておしゃべりするのが好き。"
-  },
-  {
-    "id": 1792906223669,
-    "src": "notes/1792906223669.jpg",
-    "o": "p",
-    "cap": "テーピングしてあげる！"
-  },
-  {
-    "id": 1792905999388,
-    "src": "notes/1792905999388.jpg",
-    "o": "p",
-    "cap": "牛乳パンと私、どっちが好き？"
-  },
-  {
-    "id": 1792905999355,
-    "src": "notes/1792905999355.jpg",
-    "o": "p",
-    "cap": "優勝！私の最高のセッター！"
-  },
-  {
-    "id": 1792905993453,
-    "src": "notes/1792905993453.jpg",
-    "o": "p",
-    "cap": "徹の身長、奪っちゃいたい！"
-  },
-  {
-    "id": 1792905986032,
-    "src": "notes/1792905986032.jpg",
-    "o": "p",
-    "cap": "バレー教えてくれるって言ったのに...嘘つき！"
-  }
-];
+    // type: 열차 종별 / y·d: 날짜 / time: 적은 시각 / title: 제목 / body: 본문(한 줄마다 ○ 항목, 줄바꿈 \n)
+    // tags: 태그 / photo: 사진 주소(선택) / cap: 사진 설명(선택)
+    { type:'普通', y:2026, d:'10.25', time:'21:40', title:'ここから始まる',
+      body:'사이트를 만든 첫날.\n겨울 전철 분위기로 시작해요.\n여기에 기록을 적으면 돼요.',
+      tags:['시작','기록'] },
+    { type:'急行', y:2026, d:'10.20', time:'22:15', title:'배구 연습',
+      body:'오늘 연습 기록을 여기에 적어요.\n짧게 한 줄이어도 좋아요.',
+      tags:['배구','연습'] },
+    { type:'特急', y:2026, d:'10.11', time:'20:05', title:'센다이 이야기',
+      body:'가고 싶은 곳, 먹고 싶은 것,\n좋아하는 풍경 같은 걸 적어도 좋아요.',
+      tags:['센다이','여행'] },
+    { type:'終電', y:2026, d:'09.30', time:'23:50', title:'いつかの記録',
+      body:'오래된 기록은 아래쪽 열차처럼 쌓여요.',
+      tags:['기록'] }
+  ];
   const cans = [
-  {
-    "glyph": "♡",
-    "name": "すきなもの",
-    "color": "#c9dbe9",
-    "url": "",
-    "card": true,
-    "items": [
-      "1: ミ",
-      "2: ハイキュー!! 及川 徹 오픈 비이입 드림",
-      "3: 배려 불필요",
-      "4: 1T1D 경우 탐라 유입 외 다른 배려는 하지 않습니다"
-    ]
-  },
-  {
-    "glyph": "X",
-    "name": "にがてなもの",
-    "color": "#dfe6d3",
-    "url": "",
-    "card": true,
-    "items": [
-      "1: 허공저격, 발콕콕, 심한 견제",
-      "2: 블락 컨택 X",
-      "3: 탐라 밖 일 관심 없습니다"
-    ]
-  },
-  {
-    "glyph": "O",
-    "name": "できること",
-    "color": "#f0dcc8",
-    "url": "",
-    "card": true,
-    "items": [
-      "1: 다른 계정에서 앵챗 계정 운영 중입니다",
-      "2: 앵챗 계정 맞팔 요구 X",
-      "3: 주로 마음 교류 선호합니다"
-    ]
-  },
-  {
-    "glyph": "景",
-    "name": "ふうけい",
-    "color": "#dde4ea",
-    "url": "https://youtu.be/HE-tjMUGybk?si=n95J830Gy35CI-rh",
-    "items": [
-      "좋아하는 풍경 ①",
-      "좋아하는 풍경 ②",
-      "좋아하는 풍경 ③"
-    ],
-    "card": false
-  },
-  {
-    "glyph": "球",
-    "name": "バレー",
-    "color": "#d4dcec",
-    "url": "https://youtu.be/eOLHh_HtvkM?si=MhP5FGiInKKvRQYw",
-    "items": [
-      "배구 이야기 ①",
-      "배구 이야기 ②",
-      "배구 이야기 ③"
-    ]
-  },
-  {
-    "glyph": "本",
-    "name": "ほん",
-    "color": "#e4dfcf",
-    "url": "https://youtu.be/WcvCeOhGyC0?si=WzGDCxp8Ip2BVPJX",
-    "items": [
-      "좋아하는 책 ①",
-      "좋아하는 책 ②",
-      "좋아하는 책 ③"
-    ]
-  },
-  {
-    "glyph": "夢",
-    "name": "ゆめ",
-    "color": "#dcd8ea",
-    "url": "https://youtu.be/tlq0u_OtNUk?si=z-UXNWdkYODER3aH",
-    "items": [
-      "꿈 이야기 ①",
-      "꿈 이야기 ②",
-      "꿈 이야기 ③"
-    ]
-  },
-  {
-    "glyph": "猫",
-    "name": "ねこ",
-    "color": "#d6e4e1",
-    "url": "https://youtu.be/_BNryP5e9_Y?si=vYa5UaLW2FHoS66s",
-    "items": [
-      "고양이 이야기 ①",
-      "고양이 이야기 ②",
-      "고양이 이야기 ③"
-    ]
-  },
-  {
-    "glyph": "？",
-    "name": "ひみつ",
-    "color": "#e8d6dc",
-    "url": "https://youtu.be/-LpD14iU6Mg?si=oGWbSdDqmgV4-WdL",
-    "items": [
-      "비밀 한마디 ①",
-      "비밀 한마디 ②",
-      "비밀 한마디 ③"
-    ]
-  }
-];
+    { glyph:'♡', name:'すきなもの', color:'#c9dbe9', url:'', card:true, items:['좋아하는 음식: 여기에 적어요', '좋아하는 계절: 여기에 적어요', '좋아하는 노래: 여기에 적어요', '좋아하는 것: 여기에 적어요', '한마디: 여기에 적어요'] },
+    { glyph:'X', name:'にがてなもの', color:'#dfe6d3', url:'', card:true, items:['싫어하는 음식: 여기에 적어요', '싫어하는 것: 여기에 적어요', '무서운 것: 여기에 적어요', '한마디: 여기에 적어요'] },
+    { glyph:'O', name:'できること', color:'#f0dcc8', url:'', card:true, items:['잘하는 것: 여기에 적어요', '할 수 있는 것: 여기에 적어요', '자신 있는 것: 여기에 적어요', '한마디: 여기에 적어요'] },
+    { glyph:'球', name:'バレー',   color:'#d4dcec', url:'', items:['배구 이야기 ①','배구 이야기 ②','배구 이야기 ③'] },
+    { glyph:'景', name:'ふうけい', color:'#dde4ea', url:'', items:['좋아하는 풍경 ①','좋아하는 풍경 ②','좋아하는 풍경 ③'] },
+    { glyph:'本', name:'ほん',     color:'#e4dfcf', url:'', items:['좋아하는 책 ①','좋아하는 책 ②','좋아하는 책 ③'] },
+    { glyph:'夢', name:'ゆめ',     color:'#dcd8ea', url:'', items:['꿈 이야기 ①','꿈 이야기 ②','꿈 이야기 ③'] },
+    { glyph:'猫', name:'ねこ',     color:'#d6e4e1', url:'', items:['고양이 이야기 ①','고양이 이야기 ②','고양이 이야기 ③'] },
+    { glyph:'？', name:'ひみつ',   color:'#e8d6dc', url:'', items:['비밀 한마디 ①','비밀 한마디 ②','비밀 한마디 ③'] }
+  ];
   const losts = [
-  {
-    "name": "バレーボール",
-    "info": "어디선가 굴러온 배구공. 주인을 기다리는 중.",
-    "date": "2026.10.25"
-  },
-  {
-    "name": "傘",
-    "info": "비 오는 날 두고 간 우산. 눈 오는 날엔 필요 없대요.",
-    "date": "2026.10.12"
-  },
-  {
-    "name": "スポドリ",
-    "info": "반쯤 남은 스포츠 드링크. 연습 끝나고 깜빡 두고 갔나 봐요.",
-    "date": "2026.10.03"
-  },
-  {
-    "name": "ノート",
-    "info": "아무것도 안 적힌 노트. 첫 문장을 기다려요.",
-    "date": "2026.09.28"
-  }
-];
+    { name:'バレーボール', info:'어디선가 굴러온 배구공. 주인을 기다리는 중.', date:'2026.10.25' },
+    { name:'傘',     info:'비 오는 날 두고 간 우산. 눈 오는 날엔 필요 없대요.', date:'2026.10.12' },
+    { name:'スポドリ', info:'반쯤 남은 스포츠 드링크. 연습 끝나고 깜빡 두고 갔나 봐요.', date:'2026.10.03' },
+    { name:'ノート', info:'아무것도 안 적힌 노트. 첫 문장을 기다려요.', date:'2026.09.28' }
+  ];
   const profile = {
-  "name": "花咲 小春 · 하나사키 코하루",
-  "no": "No.940720",
-  "fare": 210,
-  "bio": "오픈 비이입 드림\n배려 불필요",
-  "chips": [
-    "배구",
-    "미야기현",
-    "센다이시",
-    "오이카와"
-  ]
-};
-  const ticker = "仙台駅へようこそ。ごゆっくりお過ごしください。";
+    name: '이름을 적어요',
+    no: 'No.000001',
+    fare: 210,
+    bio: '여기에 자기소개를 적어요.\n어떤 사람인지, 이 사이트가 무슨 공간인지 두세 줄이면 충분해요.',
+    chips: ['배구','센다이','겨울','전철']
+  };
+  const ticker = '仙台駅へようこそ。ごゆっくりお過ごしください。';
+  // 車内放送 음량 (0~100) · 전체 음량. 곡마다 따로 줄이고 싶으면 캔의 vol(0~100)을 쓰세요 (駅員室에서 조절)
+  const masterVol = 100;
+  // 駅ノート : 駅員室(관리자) → 駅ノート 탭에서 사진을 올리면 여기에 기록돼요 (src: 사진 주소 / o: p 세로·l 가로 / cap: 한마디)
+  const notes = [];
   /*DATA:END*/
 
   // 승차권 · 전광판에 내용 반영 (駅員室에서 저장하면 이 값이 바뀌어요)
@@ -1908,15 +1764,17 @@
     };
     const mark = () => { $$('.can-btn', shelf).forEach(x => x.classList.toggle('playing', x === curBtn && playing)); rPP.textContent = playing ? '❚❚' : '▶'; radio.classList.toggle('paused', !playing); };
     const onState = e => {
-      const S = YT.PlayerState; playing = e.data === S.PLAYING;
+      const S = YT.PlayerState; playing = e.data === S.PLAYING; if (playing) applyVol();
       if (e.data === S.PLAYING || e.data === S.CUED) { try { const t = yt.getVideoData().title; if (t) rT.textContent = t; } catch (er) {} }
       if (e.data === S.ENDED && !isList) yt.playVideo();      // 영상 1개면 반복
       mark(); if (!busy) led.textContent = idleTxt();
     };
+    const applyVol = () => { if (!yt || !ready) return; try { const v = Math.max(0, Math.min(100, Math.round(masterVol * (cur && cur.vol != null ? cur.vol : 100) / 100))); yt.setVolume(v); } catch (e) {} };
     const start = () => {
-      const q = parseYT(cur.url); isList = !!q.list;
+      const q = parseYT(cur.url); isList = !!q.list; applyVol();
       if (q.list) { yt.loadPlaylist({ list: q.list, listType: 'playlist', index: 0 }); try { yt.setLoop(true); } catch (e) {} }
       else yt.loadVideoById(q.v);
+      applyVol();
     };
     async function play(c, btn, after) {
       if (!c.url) return;
@@ -2472,8 +2330,8 @@
   const M1 = '/*DATA' + ':START*/', M2 = '/*DATA' + ':END*/';
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const clone = o => JSON.parse(JSON.stringify(o));
-  const KEYS = ['records', 'notes', 'cans', 'losts', 'profile', 'ticker'];
-  const D = clone({ records, notes, cans, losts, profile, ticker });
+  const KEYS = ['records', 'notes', 'cans', 'losts', 'profile', 'ticker', 'masterVol'];
+  const D = clone({ records, notes, cans, losts, profile, ticker, masterVol });
   let cfg = { owner: '', repo: '', branch: 'main', path: 'index.html', token: '', remember: true };
   try { Object.assign(cfg, JSON.parse(localStorage.getItem(LS)) || {}); } catch (e) {}
   if (!cfg.owner && /\.github\.io$/.test(location.hostname)) {
@@ -2491,7 +2349,7 @@
     records: { add: () => ({ type: '普通', y: day.getFullYear(), d: pad(day.getMonth() + 1) + '.' + pad(day.getDate()), time: pad(day.getHours()) + ':' + pad(day.getMinutes()), title: '', body: '', tags: [] }),
       nm: r => r.title, f: [['type', '열차 종별', 'sel'], ['y', '연도', 'num'], ['d', '날짜 (MM.DD)'], ['time', '시각 (HH:MM)'], ['title', '제목', 'w'], ['body', '본문 (줄마다 ○ 항목)', 'ta w'], ['tags', '태그 (쉼표로 구분)', 'tags w'], ['photo', '사진 주소 (선택)', 'w'], ['cap', '사진 설명 (선택)', 'w']] },
     cans: { add: () => ({ glyph: '？', name: '', color: '#dde4ea', card: false, url: '', items: [] }), nm: c => (c.glyph || '') + ' ' + (c.name || ''),
-      f: [['glyph', '한 글자 (캔 위 글자)'], ['name', '이름'], ['color', '캔 색', 'color'], ['card', '자기소개표 캔 (체크하면 누를 때 소개표가 떠요)', 'chk'], ['url', 'YouTube 링크 (재생목록 또는 영상 · 비우면 재생 없음)', 'w'], ['items', '자기소개표 내용 (한 줄에 하나 · 「항목: 내용」 형식)', 'lines w']] },
+      f: [['glyph', '한 글자 (캔 위 글자)'], ['name', '이름'], ['color', '캔 색', 'color'], ['card', '자기소개표 캔 (체크하면 누를 때 소개표가 떠요)', 'chk'], ['url', 'YouTube 링크 (재생목록 또는 영상 · 비우면 재생 없음)', 'w'], ['vol', '이 곡 음량 (전체 음량에 곱해져요 · 곡마다 크기가 다를 때 맞추는 용도)', 'range w'], ['items', '자기소개표 내용 (한 줄에 하나 · 「항목: 내용」 형식)', 'lines w']] },
     losts: { add: () => ({ name: '', info: '', date: day.getFullYear() + '.' + pad(day.getMonth() + 1) + '.' + pad(day.getDate()) }), nm: l => l.name,
       f: [['name', '물건 이름'], ['date', '날짜 (YYYY.MM.DD)'], ['info', '설명', 'ta w']] }
   };
@@ -2501,7 +2359,7 @@
     profile: ['切符', '1番線 · 승차권 앞면(이름)과 뒷면(자기소개)이에요.'],
     records: ['時刻表', '3番線 · 기록 목록이에요. 위쪽일수록 최근 기록으로 보여요.'],
     notes: ['駅ノート', '4番線 · 노트에 붙는 사진이에요. 여기서 올린 사진은 방문자 모두에게 보여요(읽기 전용). 사진은 저장할 때 저장소의 notes 폴더에 함께 올라가요.'],
-    cans: ['自販機', '5番線 · ♡ X O 캔은 「자기소개표」 캔이에요(내용은 한 줄에 「항목: 내용」). 나머지 캔은 YouTube 링크를 넣으면 눌렀을 때 재생되고, 자판기의 返 버튼을 누르면 멈춰요.'],
+    cans: ['自販機', '5番線 · 맨 위 슬라이더로 모든 노래의 음량을 한 번에 조절해요(저장 후 사이트에 반영). 곡마다 크기가 다르면 캔 안의 「이 곡 음량」으로 맞춰요. 아이폰·아이패드는 기기 음량 버튼으로만 조절돼요. · ♡ X O 캔은 「자기소개표」 캔이에요(내용은 한 줄에 「항목: 내용」). 나머지 캔은 YouTube 링크를 넣으면 눌렀을 때 재생되고, 자판기의 返 버튼을 누르면 멈춰요.'],
     losts: ['遺失物', '6番線 · 좋아하는 것들(분실물) 목록이에요.'],
     ticker: ['電光掲示', '표지판 시간표 아래에 흐르는 파란 안내 문구예요.']
   };
@@ -2561,10 +2419,11 @@
   // ---------- 화면 그리기 ----------
   const fld = (k, i, f, v) => {
     const [key, lab, kind = ''] = f, w = / w\b|^w$/.test(' ' + kind) ? ' w' : '';
-    let val = v[key]; if (kind.includes('tags') || kind.includes('lines')) val = (val || []).join(kind.includes('tags') ? ', ' : '\n');
+    let val = v[key]; if (kind.includes('range')) val = val == null ? 100 : val; if (kind.includes('tags') || kind.includes('lines')) val = (val || []).join(kind.includes('tags') ? ', ' : '\n');
     const a = ' data-k="' + k + '" data-i="' + i + '" data-f="' + key + '" data-t="' + kind.replace(' w', '') + '"';
     let el;
-    if (kind.includes('sel')) el = '<select' + a + '>' + TYPES.map(t => '<option' + (t === v[key] ? ' selected' : '') + '>' + t + '</option>').join('') + '</select>';
+    if (kind.includes('range')) el = '<div class="adm-rg"><input type="range" min="0" max="100" step="5"' + a + ' value="' + (+val || 0) + '"><b>' + (+val || 0) + '</b></div>';
+    else if (kind.includes('sel')) el = '<select' + a + '>' + TYPES.map(t => '<option' + (t === v[key] ? ' selected' : '') + '>' + t + '</option>').join('') + '</select>';
     else if (kind.includes('ta') || kind.includes('lines')) el = '<textarea' + a + ' rows="3" spellcheck="false">' + esc(val) + '</textarea>';
     else if (kind.includes('chk')) el = '<label class="adm-chk" style="margin:0;height:36px"><input type="checkbox"' + a + (v[key] ? ' checked' : '') + '> 사용</label>';
     else if (kind.includes('color')) el = '<input type="color"' + a + ' value="' + esc(val || '#dde4ea') + '">';
@@ -2597,6 +2456,8 @@
         '<div class="w"><label>칩 (쉼표로 구분)</label><input' + a('chips') + ' data-t="tags" value="' + esc((p.chips || []).join(', ')) + '"></div></div>';
     } else if (tab === 'ticker') {
       body = '<div class="adm-grid"><div class="w"><label>안내 문구</label><textarea data-k="ticker" rows="3">' + esc(D.ticker) + '</textarea></div></div>';
+    } else if (tab === 'cans') {
+      body = '<div class="adm-card" style="padding:12px 14px"><label>🔊 車内放送 전체 음량 (6곡 모두 한 번에)</label><div class="adm-rg"><input type="range" min="0" max="100" step="5" data-k="masterVol" value="' + (+D.masterVol || 0) + '"><b>' + (+D.masterVol || 0) + '</b></div></div>' + renderList('cans');
     } else if (tab === 'notes') body = renderNotes();
     else body = renderList(tab);
     main.innerHTML = '<header class="sec-head"><span class="pnum">' + t[2] + '</span><h2>' + h[0] + '<small>' + t[3] + '</small></h2></header><p class="adm-desc">' + h[1] + '</p>' + body;
@@ -2613,12 +2474,14 @@
   ballEl.addEventListener('click', () => setTimeout(show, 450));
   ballEl.addEventListener('keydown', e => { if (e.key === 'Enter') { e.stopPropagation(); show(); } });
 
-  const parse = (t, v) => t === 'tags' ? v.split(/[,，]/).map(s => s.trim()).filter(Boolean) : t === 'lines' ? v.split('\n').map(s => s.trim()).filter(Boolean) : t === 'num' ? (parseInt(v, 10) || 0) : v;
+  const parse = (t, v) => t === 'tags' ? v.split(/[,，]/).map(s => s.trim()).filter(Boolean) : t === 'lines' ? v.split('\n').map(s => s.trim()).filter(Boolean) : t === 'num' ? (parseInt(v, 10) || 0) : t === 'range' ? (+v || 0) : v;
   main.addEventListener('input', e => {
     const el = e.target;
     if (el.dataset.g) { cfg[el.dataset.g] = el.type === 'checkbox' ? el.checked : el.value.trim(); persist(); return; }
     const k = el.dataset.k; if (!k) return;
-    if (k === 'ticker') D.ticker = el.value;
+    if (el.type === 'range' && el.nextElementSibling) el.nextElementSibling.textContent = el.value;
+    if (k === 'masterVol') D.masterVol = +el.value || 0;
+    else if (k === 'ticker') D.ticker = el.value;
     else if (k === 'profile') D.profile[el.dataset.f] = parse(el.dataset.t, el.value);
     else {
       const o = D[k][+el.dataset.i]; o[el.dataset.f] = el.type === 'checkbox' ? el.checked : parse(el.dataset.t, el.value);
