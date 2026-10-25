@@ -829,10 +829,10 @@
 
   /* ================= 車内放送 (자판기 재생 바) ================= */
   .can-btn.playing .can{filter:drop-shadow(0 0 7px rgba(110,168,255,.85))}
-  .radio{position:fixed;left:50%;bottom:16px;z-index:900;display:none;align-items:center;gap:11px;width:min(400px,calc(100vw - 24px));padding:8px 10px 8px 12px;transform:translateX(-50%);background:linear-gradient(#fff,var(--paper));border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);overflow:hidden}
-  .radio.on{display:flex;animation:sec-in .35s ease both}
-  .radio::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--accent);opacity:.8}
-  .radio.paused::after{background:var(--band);opacity:1}
+  .radio{position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:visible;opacity:0;pointer-events:none;display:block}
+  /* 재생 바는 화면에 보이지 않아요 (소리는 그대로 재생) */
+  .radio>:not(.r-host){display:none!important}
+  .radio::after{display:none!important}
   .r-host{position:fixed;left:-9999px;top:0;width:220px;height:220px}
   .r-ic{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--band);color:#fff;font-family:"Shippori Mincho",serif;font-size:15px}
   .r-tx{flex:1;min-width:0}
@@ -1527,7 +1527,7 @@
     "url": "",
     "card": true,
     "items": [
-      "1: ミ 미",
+      "1: ミ",
       "2: ハイキュー!! 及川 徹 오픈 비이입 드림",
       "3: 배려 불필요",
       "4: 1T1D 경우 탐라 유입 외 다른 배려는 하지 않습니다"
@@ -1660,7 +1660,8 @@
   ]
 };
   const ticker = "仙台駅へようこそ。ごゆっくりお過ごしください。";
-  const masterVol = 5;
+  // 車内放送 음량 (0~100) · 전체 음량. 곡마다 따로 줄이고 싶으면 캔의 vol(0~100)을 쓰세요 (駅員室에서 조절)
+  const masterVol = 100;
   /*DATA:END*/
 
   // 승차권 · 전광판에 내용 반영 (駅員室에서 저장하면 이 값이 바뀌어요)
