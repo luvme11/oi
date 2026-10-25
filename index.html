@@ -947,6 +947,15 @@
   .adm-chk{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;color:var(--ink-soft);letter-spacing:.04em}
   .adm-note{margin-top:14px;padding:10px 12px;border-left:3px solid var(--band);background:#f4f7f8;font-size:12px;line-height:1.8;color:var(--ink-soft);border-radius:0 5px 5px 0}
   .adm-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .adm-nt{display:grid;gap:10px}
+  .adm-ntc{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:6px;background:#fff;padding:10px;box-shadow:0 1px 3px rgba(80,100,120,.08)}
+  .adm-ntc .pv{flex:none;width:66px;aspect-ratio:46/62;background:#cfd9e0;border-radius:2px;overflow:hidden}
+  .adm-ntc .pv.l{width:88px;aspect-ratio:62/46}
+  .adm-ntc .pv img{display:block;width:100%;height:100%;object-fit:cover}
+  .adm-ntc .bd{flex:1;min-width:0}
+  .adm-ntc .ft{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+  .adm-ntc .ft small{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10.5px;color:var(--ink-soft)}
+  .adm-empty{padding:18px;text-align:center;font-size:12px;line-height:1.8;color:var(--ink-soft);border:1px dashed var(--line);border-radius:6px}
   @media(max-width:660px){
     .adm{padding:0}.adm-win{height:100%;border-radius:0}
     .adm-body{grid-template-columns:1fr;grid-template-rows:auto 1fr}
@@ -1226,7 +1235,7 @@
             <div class="tk-head"><span class="tk-kind">乗車券</span><span class="tk-valid">発売当日限り有効 ／ 下車前途無効</span></div>
             <div class="tk-route"><span>ひろせどおり</span><span class="a">→</span><span>せんだい</span><small>ゆき</small></div>
             <div class="tk-mid">
-              <div class="tk-fare"><small>¥</small>0<small>円</small></div>
+              <div class="tk-fare"><small>¥</small><span id="t-fare">210</span><small>円</small></div>
               <div class="tk-class">普通<br>おとな 1名</div>
             </div>
             <div class="tk-foot">
@@ -1327,7 +1336,7 @@
       <div class="nb-ribbon" aria-hidden="true"></div>
       <input type="file" id="n-file" accept="image/*" multiple hidden>
     </div>
-    <p class="hint">사진과 글은 이 브라우저에만 저장돼요 · 사진 아래 흰 칸을 눌러 글씨를 적어요</p>
+    <p class="hint">주인이 붙인 사진은 모두에게 보여요 · 내가 붙인 사진과 글은 이 브라우저에만 저장돼요 · 내 사진 아래 흰 칸을 눌러 글씨를 적어요</p>
   </section>
 
   <!-- ===== 5番線 : 자판기 ===== -->
@@ -1458,201 +1467,55 @@
   // =====================================================
   /*DATA:START*/
   const records = [
-  {
-    "type": "普通",
-    "y": 2026,
-    "d": "10.25",
-    "time": "21:40",
-    "title": "ここから始まる",
-    "body": "사이트를 만든 첫날.\n겨울 전철 분위기로 시작해요.\n여기에 기록을 적으면 돼요.",
-    "tags": [
-      "시작",
-      "기록"
-    ]
-  },
-  {
-    "type": "急行",
-    "y": 2026,
-    "d": "10.20",
-    "time": "22:15",
-    "title": "배구 연습",
-    "body": "오늘 연습 기록을 여기에 적어요.\n짧게 한 줄이어도 좋아요.",
-    "tags": [
-      "배구",
-      "연습"
-    ]
-  },
-  {
-    "type": "特急",
-    "y": 2026,
-    "d": "10.11",
-    "time": "20:05",
-    "title": "센다이 이야기",
-    "body": "가고 싶은 곳, 먹고 싶은 것,\n좋아하는 풍경 같은 걸 적어도 좋아요.",
-    "tags": [
-      "센다이",
-      "여행"
-    ]
-  },
-  {
-    "type": "終電",
-    "y": 2026,
-    "d": "09.30",
-    "time": "23:50",
-    "title": "いつかの記録",
-    "body": "오래된 기록은 아래쪽 열차처럼 쌓여요.",
-    "tags": [
-      "기록"
-    ]
-  }
-];
+    // type: 열차 종별 / y·d: 날짜 / time: 적은 시각 / title: 제목 / body: 본문(한 줄마다 ○ 항목, 줄바꿈 \n)
+    // tags: 태그 / photo: 사진 주소(선택) / cap: 사진 설명(선택)
+    { type:'普通', y:2026, d:'10.25', time:'21:40', title:'ここから始まる',
+      body:'사이트를 만든 첫날.\n겨울 전철 분위기로 시작해요.\n여기에 기록을 적으면 돼요.',
+      tags:['시작','기록'] },
+    { type:'急行', y:2026, d:'10.20', time:'22:15', title:'배구 연습',
+      body:'오늘 연습 기록을 여기에 적어요.\n짧게 한 줄이어도 좋아요.',
+      tags:['배구','연습'] },
+    { type:'特急', y:2026, d:'10.11', time:'20:05', title:'센다이 이야기',
+      body:'가고 싶은 곳, 먹고 싶은 것,\n좋아하는 풍경 같은 걸 적어도 좋아요.',
+      tags:['센다이','여행'] },
+    { type:'終電', y:2026, d:'09.30', time:'23:50', title:'いつかの記録',
+      body:'오래된 기록은 아래쪽 열차처럼 쌓여요.',
+      tags:['기록'] }
+  ];
   const cans = [
-  {
-    "glyph": "♡",
-    "name": "すきなもの",
-    "color": "#c9dbe9",
-    "url": "",
-    "card": true,
-    "items": [
-      "좋아하는 음식: 여기에 적어요",
-      "좋아하는 계절: 여기에 적어요",
-      "좋아하는 노래: 여기에 적어요",
-      "좋아하는 것: 여기에 적어요",
-      "한마디: 여기에 적어요"
-    ]
-  },
-  {
-    "glyph": "X",
-    "name": "にがてなもの",
-    "color": "#dfe6d3",
-    "url": "",
-    "card": true,
-    "items": [
-      "싫어하는 음식: 여기에 적어요",
-      "싫어하는 것: 여기에 적어요",
-      "무서운 것: 여기에 적어요",
-      "한마디: 여기에 적어요"
-    ]
-  },
-  {
-    "glyph": "O",
-    "name": "できること",
-    "color": "#f0dcc8",
-    "url": "",
-    "card": true,
-    "items": [
-      "잘하는 것: 여기에 적어요",
-      "할 수 있는 것: 여기에 적어요",
-      "자신 있는 것: 여기에 적어요",
-      "한마디: 여기에 적어요"
-    ]
-  },
-  {
-    "glyph": "球",
-    "name": "バレー",
-    "color": "#d4dcec",
-    "url": "",
-    "items": [
-      "배구 이야기 ①",
-      "배구 이야기 ②",
-      "배구 이야기 ③"
-    ]
-  },
-  {
-    "glyph": "景",
-    "name": "ふうけい",
-    "color": "#dde4ea",
-    "url": "",
-    "items": [
-      "좋아하는 풍경 ①",
-      "좋아하는 풍경 ②",
-      "좋아하는 풍경 ③"
-    ]
-  },
-  {
-    "glyph": "本",
-    "name": "ほん",
-    "color": "#e4dfcf",
-    "url": "",
-    "items": [
-      "좋아하는 책 ①",
-      "좋아하는 책 ②",
-      "좋아하는 책 ③"
-    ]
-  },
-  {
-    "glyph": "夢",
-    "name": "ゆめ",
-    "color": "#dcd8ea",
-    "url": "",
-    "items": [
-      "꿈 이야기 ①",
-      "꿈 이야기 ②",
-      "꿈 이야기 ③"
-    ]
-  },
-  {
-    "glyph": "猫",
-    "name": "ねこ",
-    "color": "#d6e4e1",
-    "url": "",
-    "items": [
-      "고양이 이야기 ①",
-      "고양이 이야기 ②",
-      "고양이 이야기 ③"
-    ]
-  },
-  {
-    "glyph": "？",
-    "name": "ひみつ",
-    "color": "#e8d6dc",
-    "url": "",
-    "items": [
-      "비밀 한마디 ①",
-      "비밀 한마디 ②",
-      "비밀 한마디 ③"
-    ]
-  }
-];
+    { glyph:'♡', name:'すきなもの', color:'#c9dbe9', url:'', card:true, items:['좋아하는 음식: 여기에 적어요', '좋아하는 계절: 여기에 적어요', '좋아하는 노래: 여기에 적어요', '좋아하는 것: 여기에 적어요', '한마디: 여기에 적어요'] },
+    { glyph:'X', name:'にがてなもの', color:'#dfe6d3', url:'', card:true, items:['싫어하는 음식: 여기에 적어요', '싫어하는 것: 여기에 적어요', '무서운 것: 여기에 적어요', '한마디: 여기에 적어요'] },
+    { glyph:'O', name:'できること', color:'#f0dcc8', url:'', card:true, items:['잘하는 것: 여기에 적어요', '할 수 있는 것: 여기에 적어요', '자신 있는 것: 여기에 적어요', '한마디: 여기에 적어요'] },
+    { glyph:'球', name:'バレー',   color:'#d4dcec', url:'', items:['배구 이야기 ①','배구 이야기 ②','배구 이야기 ③'] },
+    { glyph:'景', name:'ふうけい', color:'#dde4ea', url:'', items:['좋아하는 풍경 ①','좋아하는 풍경 ②','좋아하는 풍경 ③'] },
+    { glyph:'本', name:'ほん',     color:'#e4dfcf', url:'', items:['좋아하는 책 ①','좋아하는 책 ②','좋아하는 책 ③'] },
+    { glyph:'夢', name:'ゆめ',     color:'#dcd8ea', url:'', items:['꿈 이야기 ①','꿈 이야기 ②','꿈 이야기 ③'] },
+    { glyph:'猫', name:'ねこ',     color:'#d6e4e1', url:'', items:['고양이 이야기 ①','고양이 이야기 ②','고양이 이야기 ③'] },
+    { glyph:'？', name:'ひみつ',   color:'#e8d6dc', url:'', items:['비밀 한마디 ①','비밀 한마디 ②','비밀 한마디 ③'] }
+  ];
   const losts = [
-  {
-    "name": "バレーボール",
-    "info": "어디선가 굴러온 배구공. 주인을 기다리는 중.",
-    "date": "2026.10.25"
-  },
-  {
-    "name": "傘",
-    "info": "비 오는 날 두고 간 우산. 눈 오는 날엔 필요 없대요.",
-    "date": "2026.10.12"
-  },
-  {
-    "name": "スポドリ",
-    "info": "반쯤 남은 스포츠 드링크. 연습 끝나고 깜빡 두고 갔나 봐요.",
-    "date": "2026.10.03"
-  },
-  {
-    "name": "ノート",
-    "info": "아무것도 안 적힌 노트. 첫 문장을 기다려요.",
-    "date": "2026.09.28"
-  }
-];
+    { name:'バレーボール', info:'어디선가 굴러온 배구공. 주인을 기다리는 중.', date:'2026.10.25' },
+    { name:'傘',     info:'비 오는 날 두고 간 우산. 눈 오는 날엔 필요 없대요.', date:'2026.10.12' },
+    { name:'スポドリ', info:'반쯤 남은 스포츠 드링크. 연습 끝나고 깜빡 두고 갔나 봐요.', date:'2026.10.03' },
+    { name:'ノート', info:'아무것도 안 적힌 노트. 첫 문장을 기다려요.', date:'2026.09.28' }
+  ];
   const profile = {
-  "name": "花咲 小春 · 하나사키 코하루",
-  "no": "No.492818",
-  "bio": "여기에 자기소개를 적어요.\n어떤 사람인지, 이 사이트가 무슨 공간인지 두세 줄이면 충분해요.",
-  "chips": [
-    "하이큐",
-    "오이카와 토오루",
-    "드림"
-  ]
-};
-  const ticker = "仙台駅へようこそ。ごゆっくりお過ごしください。";
+    name: '이름을 적어요',
+    no: 'No.000001',
+    fare: 210,
+    bio: '여기에 자기소개를 적어요.\n어떤 사람인지, 이 사이트가 무슨 공간인지 두세 줄이면 충분해요.',
+    chips: ['배구','센다이','겨울','전철']
+  };
+  const ticker = '仙台駅へようこそ。ごゆっくりお過ごしください。';
+  // 駅ノート : 駅員室(관리자) → 駅ノート 탭에서 사진을 올리면 여기에 기록돼요 (src: 사진 주소 / o: p 세로·l 가로 / cap: 한마디)
+  const notes = [];
   /*DATA:END*/
 
   // 승차권 · 전광판에 내용 반영 (駅員室에서 저장하면 이 값이 바뀌어요)
   (() => {
     const $ = s => document.querySelector(s);
     $("#t-name").textContent = profile.name; $("#t-no").textContent = profile.no;
+    if (profile.fare != null && profile.fare !== "") $("#t-fare").textContent = Number(profile.fare).toLocaleString("en-US");
     const bio = $("#t-bio"); bio.textContent = "";
     String(profile.bio).split("\n").forEach((l, i) => { if (i) bio.appendChild(document.createElement("br")); bio.appendChild(document.createTextNode(l)); });
     const ch = $("#t-chips"); ch.textContent = "";
@@ -1802,19 +1665,24 @@
         x.onclick = () => { if (!confirm('삭제할까요?')) return; mine = mine.filter(v => v !== it); store('readwrite', st => st.delete(it.id)); render(); };
         f.appendChild(x);
         ph.style.cursor = 'zoom-in'; ph.addEventListener('click', () => lightbox(it, url));
-      } else { const c = el('div', 'pz-cap ro'); c.textContent = it.cap || ''; f.appendChild(c); }
+      } else {
+        const c = el('div', 'pz-cap ro'); c.textContent = it.cap || ''; f.appendChild(c);
+        if (!opt.big) { ph.style.cursor = 'zoom-in'; ph.addEventListener('click', () => lightbox(it, url)); }
+      }
       return f;
     };
     const lightbox = (it, url) => {
-      const bg = el('div', 'pz-lb'), big = polaroid(it, url, {}); big.classList.add('big'); big.style.setProperty('--r', '0deg'); big.style.setProperty('--dx', '0px');
+      const bg = el('div', 'pz-lb'), big = polaroid(it, url, { big: true }); big.classList.add('big'); big.style.setProperty('--r', '0deg'); big.style.setProperty('--dx', '0px');
       bg.appendChild(big);
       const close = () => { bg.remove(); removeEventListener('keydown', esc); }, esc = e => { if (e.key === 'Escape') close(); };
       bg.addEventListener('click', close); addEventListener('keydown', esc); document.body.appendChild(bg);
     };
     // 쪽 나누기: 한 쪽에 4칸 (세로 사진 1칸, 가로 사진 2칸). 첫 쪽 맨 앞은 '붙이기' 칸
+    // 주인(駅員室)이 붙인 사진: 모두에게 보여요 · 읽기 전용
+    const pubs = (typeof notes !== 'undefined' && Array.isArray(notes) ? notes : []).filter(n => n && n.src).map(n => ({ id: 's' + n.id, o: n.o === 'l' ? 'l' : 'p', cap: n.cap || '', src: n.src, pub: true }));
     const pagesOf = () => {
       const pages = []; let cur = [], u = 0;
-      ['add'].concat(mine).forEach(it => {
+      ['add'].concat(mine, pubs).forEach(it => {
         const k = it !== 'add' && it.o === 'l' ? 2 : 1;
         if (k === 2 && u % 2) u++;
         if (u + k > 4) { pages.push(cur); cur = []; u = 0; }
@@ -1836,6 +1704,7 @@
         g.textContent = ''; g.classList.remove('turn'); void g.offsetWidth; g.classList.add('turn');
         list.forEach(it => {
           if (it === 'add') { g.appendChild(addTile()); return; }
+          if (it.pub) { g.appendChild(polaroid(it, it.src, {})); return; }
           const u = URL.createObjectURL(it.b); urls.push(u);
           g.appendChild(polaroid(it, u, { edit: true, dev: fresh.has(it.id) }));
         });
@@ -2483,8 +2352,8 @@
   const M1 = '/*DATA' + ':START*/', M2 = '/*DATA' + ':END*/';
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const clone = o => JSON.parse(JSON.stringify(o));
-  const KEYS = ['records', 'cans', 'losts', 'profile', 'ticker'];
-  const D = clone({ records, cans, losts, profile, ticker });
+  const KEYS = ['records', 'notes', 'cans', 'losts', 'profile', 'ticker'];
+  const D = clone({ records, notes, cans, losts, profile, ticker });
   let cfg = { owner: '', repo: '', branch: 'main', path: 'index.html', token: '', remember: true };
   try { Object.assign(cfg, JSON.parse(localStorage.getItem(LS)) || {}); } catch (e) {}
   if (!cfg.owner && /\.github\.io$/.test(location.hostname)) {
@@ -2494,7 +2363,7 @@
   const persist = () => { try { localStorage.setItem(LS, JSON.stringify(cfg.remember ? cfg : Object.assign({}, cfg, { token: '' }))); } catch (e) {} };
 
   const TABS = [
-    ['gh', 'GitHub', '設定', '連携'], ['profile', '切符', '1番線', 'PROFILE'], ['records', '時刻表', '3番線', 'RECORD'],
+    ['gh', 'GitHub', '設定', '連携'], ['profile', '切符', '1番線', 'PROFILE'], ['records', '時刻表', '3番線', 'RECORD'], ['notes', '駅ノート', '4番線', 'GUEST NOTE'],
     ['cans', '自販機', '5番線', 'VENDING'], ['losts', '遺失物', '6番線', 'LOST & FOUND'], ['ticker', '電光掲示', '案内', 'TICKER']
   ];
   const day = new Date(), pad = n => String(n).padStart(2, '0');
@@ -2511,6 +2380,7 @@
     gh: ['GitHub 연결', '저장하면 이 사이트의 HTML 파일을 GitHub에 커밋해요. 토큰은 이 브라우저에만 저장되고 파일에는 들어가지 않아요.'],
     profile: ['切符', '1番線 · 승차권 앞면(이름)과 뒷면(자기소개)이에요.'],
     records: ['時刻表', '3番線 · 기록 목록이에요. 위쪽일수록 최근 기록으로 보여요.'],
+    notes: ['駅ノート', '4番線 · 노트에 붙는 사진이에요. 여기서 올린 사진은 방문자 모두에게 보여요(읽기 전용). 사진은 저장할 때 저장소의 notes 폴더에 함께 올라가요.'],
     cans: ['自販機', '5番線 · ♡ X O 캔은 「자기소개표」 캔이에요(내용은 한 줄에 「항목: 내용」). 나머지 캔은 YouTube 링크를 넣으면 눌렀을 때 재생되고, 자판기의 返 버튼을 누르면 멈춰요.'],
     losts: ['遺失物', '6番線 · 좋아하는 것들(분실물) 목록이에요.'],
     ticker: ['電光掲示', '표지판 시간표 아래에 흐르는 파란 안내 문구예요.']
@@ -2527,6 +2397,46 @@
   let tab = 'gh', open = -1, dirty = false;
   const say = (m, c) => { st.textContent = m; st.className = 'adm-st' + (c ? ' ' + c : ''); };
   const touch = () => { if (!dirty) { dirty = true; say('수정했어요 · 저장을 눌러야 GitHub에 올라가요'); } };
+
+  // ---------- 駅ノート 사진 ----------
+  const pend = {}, gone = [];   // pend: 아직 올리지 않은 새 사진 / gone: 저장소에서 지울 사진
+  const nf = document.createElement('input'); nf.type = 'file'; nf.accept = 'image/*'; nf.multiple = true; nf.hidden = true; root.appendChild(nf);
+  // 인스탁스 미니 비율(세로 46:62 / 가로 62:46)로 가운데를 잘라 줄이기
+  const shrink = file => new Promise((ok, no) => {
+    const u = URL.createObjectURL(file), im = new Image();
+    im.onload = () => {
+      const w = im.naturalWidth, h = im.naturalHeight, land = w > h * 1.05, R = land ? 62 / 46 : 46 / 62;
+      let cw = w, ch = w / R; if (ch > h) { ch = h; cw = h * R; }
+      const cv = document.createElement('canvas'), k = Math.min(1, 720 / Math.max(cw, ch));
+      cv.width = Math.round(cw * k); cv.height = Math.round(ch * k);
+      cv.getContext('2d').drawImage(im, (w - cw) / 2, (h - ch) / 2, cw, ch, 0, 0, cv.width, cv.height);
+      URL.revokeObjectURL(u); cv.toBlob(b => b ? ok({ b, o: land ? 'l' : 'p' }) : no(), 'image/jpeg', .84);
+    };
+    im.onerror = () => { URL.revokeObjectURL(u); no(); };
+    im.src = u;
+  });
+  const toB64 = blob => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1]); r.onerror = no; r.readAsDataURL(blob); });
+  nf.addEventListener('change', async () => {
+    const files = [...nf.files].filter(f => /^image\//.test(f.type)); nf.value = '';
+    let good = 0, bad = 0;
+    for (const f of files) {
+      try {
+        const r = await shrink(f), id = Date.now() + good;
+        pend[id] = { b64: await toB64(r.b), url: URL.createObjectURL(r.b), done: false };
+        D.notes.unshift({ id, src: 'notes/' + id + '.jpg', o: r.o, cap: '' }); good++;
+      } catch (e) { bad++; }
+    }
+    if (good) { render(); touch(); }
+    if (bad) say(bad + '장은 불러올 수 없었어요 (지원하지 않는 사진 형식일 수 있어요)', 'err');
+  });
+  const renderNotes = () => (D.notes.length ? '<div class="adm-nt">' + D.notes.map((n, i) => {
+    const p = pend[n.id], btn = (a, t, l) => '<button type="button" data-a="' + a + '" data-k="notes" data-i="' + i + '" title="' + t + '">' + l + '</button>';
+    return '<div class="adm-ntc"><div class="pv' + (n.o === 'l' ? ' l' : '') + '"><img src="' + esc(p ? p.url : n.src) + '" alt=""></div>' +
+      '<div class="bd"><label>한마디 (최대 24자 · 사진 아래 흰 칸에 써져요)</label><input data-k="notes" data-i="' + i + '" data-f="cap" maxlength="24" value="' + esc(n.cap) + '" spellcheck="false">' +
+      '<div class="ft"><small>' + (p && !p.done ? '새 사진 · 저장하면 올라가요' : esc(n.src)) + '</small><span class="adm-ib">' + btn('up', '앞으로', '↑') + btn('down', '뒤로', '↓') + btn('del', '삭제', '×') + '</span></div></div></div>';
+  }).join('') + '</div>' : '<div class="adm-empty">아직 노트에 붙인 사진이 없어요.<br>아래 버튼으로 사진을 추가해 보세요.</div>') +
+    '<div class="adm-row"><button class="adm-btn" type="button" data-a="addnote">＋ 사진 추가</button></div>' +
+    '<div class="adm-note">사진은 자동으로 인스탁스 비율로 잘라 줄여요. 저장하면 저장소의 <b>notes</b> 폴더에 올라가고, 삭제하면 그 파일도 함께 지워져요.</div>';
 
   // ---------- 화면 그리기 ----------
   const fld = (k, i, f, v) => {
@@ -2562,11 +2472,13 @@
     } else if (tab === 'profile') {
       const p = D.profile, a = k => ' data-k="profile" data-f="' + k + '"';
       body = '<div class="adm-grid"><div><label>氏名 · 이름</label><input' + a('name') + ' value="' + esc(p.name) + '"></div><div><label>승차권 번호</label><input' + a('no') + ' value="' + esc(p.no) + '"></div>' +
+        '<div><label>運賃 · 운임 (円)</label><input' + a('fare') + ' data-t="num" inputmode="numeric" value="' + esc(p.fare == null ? 210 : p.fare) + '"></div>' +
         '<div class="w"><label>裏 · 자기소개 (줄바꿈 가능)</label><textarea' + a('bio') + ' rows="5">' + esc(p.bio) + '</textarea></div>' +
         '<div class="w"><label>칩 (쉼표로 구분)</label><input' + a('chips') + ' data-t="tags" value="' + esc((p.chips || []).join(', ')) + '"></div></div>';
     } else if (tab === 'ticker') {
       body = '<div class="adm-grid"><div class="w"><label>안내 문구</label><textarea data-k="ticker" rows="3">' + esc(D.ticker) + '</textarea></div></div>';
-    } else body = renderList(tab);
+    } else if (tab === 'notes') body = renderNotes();
+    else body = renderList(tab);
     main.innerHTML = '<header class="sec-head"><span class="pnum">' + t[2] + '</span><h2>' + h[0] + '<small>' + t[3] + '</small></h2></header><p class="adm-desc">' + h[1] + '</p>' + body;
   };
 
@@ -2590,7 +2502,7 @@
     else if (k === 'profile') D.profile[el.dataset.f] = parse(el.dataset.t, el.value);
     else {
       const o = D[k][+el.dataset.i]; o[el.dataset.f] = el.type === 'checkbox' ? el.checked : parse(el.dataset.t, el.value);
-      const nm = el.closest('.adm-card').querySelector('.nm'); nm.textContent = LISTS[k].nm(o) || '(이름 없음)';
+      const cd = el.closest('.adm-card'), nm = cd && cd.querySelector('.nm'); if (nm && LISTS[k]) nm.textContent = LISTS[k].nm(o) || '(이름 없음)';
     }
     touch();
   });
@@ -2600,8 +2512,9 @@
     const a = b.dataset.a, k = b.dataset.k, i = +b.dataset.i;
     if (['up', 'down', 'del'].includes(a)) e.preventDefault();
     if (a === 'add') { D[k].unshift(LISTS[k].add()); open = 0; render(); touch(); }
-    else if (a === 'del') { if (confirm('삭제할까요?')) { D[k].splice(i, 1); open = -1; render(); touch(); } }
+    else if (a === 'del') { if (confirm('삭제할까요?')) { if (k === 'notes') { const n = D.notes[i]; if (pend[n.id]) delete pend[n.id]; else if (n.src) gone.push(n.src); } D[k].splice(i, 1); open = -1; render(); touch(); } }
     else if (a === 'up' || a === 'down') { const j = a === 'up' ? i - 1 : i + 1; if (j >= 0 && j < D[k].length) { [D[k][i], D[k][j]] = [D[k][j], D[k][i]]; open = j; render(); touch(); } }
+    else if (a === 'addnote') nf.click();
     else if (a === 'test') test();
     else if (a === 'forget') { cfg.token = ''; persist(); render(); say('토큰을 지웠어요'); }
   });
@@ -2611,8 +2524,8 @@
     if (!cfg.token || !cfg.owner || !cfg.repo || !cfg.path) { tab = 'gh'; render(); say('GitHub 설정과 토큰이 모두 필요해요', 'err'); return false; }
     return true;
   };
-  const api = async (method, body) => {
-    const u = 'https://api.github.com/repos/' + encodeURIComponent(cfg.owner) + '/' + encodeURIComponent(cfg.repo) + '/contents/' + cfg.path.split('/').map(encodeURIComponent).join('/') + (method === 'GET' ? '?ref=' + encodeURIComponent(cfg.branch) : '');
+  const api = async (method, body, path) => {
+    const u = 'https://api.github.com/repos/' + encodeURIComponent(cfg.owner) + '/' + encodeURIComponent(cfg.repo) + '/contents/' + (path || cfg.path).split('/').map(encodeURIComponent).join('/') + (method === 'GET' ? '?ref=' + encodeURIComponent(cfg.branch) : '');
     const r = await fetch(u, { method, headers: { Authorization: 'Bearer ' + cfg.token, Accept: 'application/vnd.github+json' }, body: body ? JSON.stringify(body) : undefined });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(r.status === 401 ? '토큰이 올바르지 않거나 만료됐어요' : r.status === 403 ? '권한이 없어요 (토큰의 Contents 쓰기 권한 확인)' : r.status === 404 ? '저장소·브랜치·파일 경로를 찾을 수 없어요 (비공개 저장소는 토큰 권한도 확인)' : r.status === 409 || r.status === 422 ? '그 사이 파일이 바뀌었어요. 다시 저장해 주세요' : (j.message || 'HTTP ' + r.status));
@@ -2629,10 +2542,21 @@
   saveBtn.onclick = async () => {
     if (!need()) return; saveBtn.disabled = true; say('GitHub에 저장 중…');
     try {
+      const dir = cfg.path.replace(/[^/]*$/, '');
+      const ups = D.notes.filter(n => pend[n.id] && !pend[n.id].done);
+      for (let q = 0; q < ups.length; q++) {
+        const n = ups[q]; say('사진 올리는 중… ' + (q + 1) + ' / ' + ups.length);
+        await api('PUT', { message: '駅員室: 노트 사진 추가', content: pend[n.id].b64, branch: cfg.branch }, dir + n.src);
+        pend[n.id].done = true;
+      }
+      say('GitHub에 저장 중…');
       const j = await api('GET'), t = dec(j.content), a = t.indexOf(M1), b = t.indexOf(M2, a);
       if (a < 0 || b < 0) throw new Error('파일에서 데이터 표식을 찾지 못했어요. 올바른 HTML 파일 경로인지 확인해 주세요');
       const next = t.slice(0, a) + block() + t.slice(b + M2.length);
       await api('PUT', { message: '駅員室: 내용 수정 ' + new Date().toISOString().slice(0, 16).replace('T', ' '), content: enc(next), sha: j.sha, branch: cfg.branch });
+      for (const s of gone.splice(0)) {   // 노트에서 뺀 사진 파일 지우기 (실패해도 저장은 유지)
+        try { const g = await api('GET', null, dir + s); await api('DELETE', { message: '駅員室: 노트 사진 삭제', sha: g.sha, branch: cfg.branch }, dir + s); } catch (e) {}
+      }
       dirty = false; say('保存しました · GitHub에 올라갔어요. 반영까지 1~2분 걸릴 수 있어요', 'ok');
     } catch (e) { say(e.message, 'err'); }
     saveBtn.disabled = false;
